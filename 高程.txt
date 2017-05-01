@@ -1,0 +1,252 @@
+一、基本类型和引用类型
+
+1、引用类型可以添加属性和方法
+
+var person=new Object();
+person.name='asd';
+alert(person.name)     // 'asd'
+
+2、复制变量值
+
+当从一个变量向另一个变量复制基本类型值和引用类型值两者有区别
+
+基本类型值: 
+var num1=5;
+var num2=num1;
+num1='';
+alert(num2)  //  '5'
+alert(num1)  //  ''
+创建的两个变量指向不同内存空间，只是将num1中变量值传递给了num2
+
+引用类型值:
+var obj1=new Object();
+var obj2=obj1;
+obj1.name='asd';
+alert（obj1.name）  // 'asd'
+alert(obj2.name)    // 'asd'
+obj1指向object对象，其实是个指针，会在本地复制一遍object属性方法。执行复制操作后新变量也会指向object对象，对obj1添加属性
+操作其实就是对引用对象object执行操作。所以obj2.name访问的是obejct对象的属性  自然可以输出
+
+
+3、传递参数
+
+函数外部向函数内部传递参数，其实就是把值从一个变量复制到另一个变量，跟基本类型传递方式相同
+
+function add(num){
+	num+=10;
+	return num;
+}
+var test=10;
+var test2=add(test);
+alert(test)     //'10'
+alert(test2)    //'20'
+
+
+不管变量是引用类型值还是基本类型值，在函数传递参数这块都是按值传递给函数内部的
+
+
+function set(obj){
+	obj.name='asd';
+	obj=new Object();
+	obj.name='qwe';
+}
+var test=new Object();
+set(test);
+alert(test.name)     //'asd';
+
+其实这里其实函数内部又重新引用了一个Object的局部对象，在函数执行完毕后自动销毁。如果这里函数传参如果是按引用类型值的话，
+obj和test都会作为一个指针指向object这个对象，那么修改name属性是会起作用的 。结果是没有起作用，就说明这里参数是按基本类
+型传递的。。
+
+
+4、类型检测
+
+
+typeof :区分字符串、数值、布尔值、或者undefined。
+局限:对于对象或者null 都会返回object，无法区分
+
+instanceof:区分object,因为所有引用类型值都是object实例，而基本类型不是对象
+
+
+
+
+二、执行环境和作用域
+
+
+执行环境:每个执行环境都有一个与之相关联的变量对象，环境所有定义的变量和函数都在这对象里面。web浏览器全局对象为window。所有
+变量和函数都作为window属性和方法创建
+
+
+作用域链:每一个对象创建时候都有自己的执行环境，作用域链就是用来保证当前环境下所能访问的变量及函数能访问到，它从变量对象arguments
+开始，外部一层层套着许多个包含环境，直到window的全局执行环境。
+
+
+强调:JS只有顶级作用域和函数作用域，没有块级作用域。与C语言、JAVA的比较大的区别
+
+for(var i;i<10;i++){
+	i;
+}
+alert(i)     //'10'
+因为没有块级作用域，所以for内部定义的循环变量在循环结束并没有销毁，而是会执行再循环外部环境中
+
+
+2、变量声明
+
+var:声明变量  
+let:声明块级作用域的变量   
+const:声明常量
+
+
+通过var声明的变量会自动添加到最近的执行环境里，如函数内部声明的变量就会添加到函数内部的执行环境里
+如果未用任何声明关键字,变量创建则直接默认为执行环境为全局环境，可在所有地方访问
+
+
+function(sum1,sum2){
+	sum=sum1+sum2;
+	return sum;
+}
+var result=add(10,20);    //'30'
+alert(sum);      	  //'30'
+
+
+
+三、内存问题
+
+Javascript自动垃圾收集机制来处理内存回收问题
+
+自动垃圾收集机制:找出不用继续使用的变量，释放掉这些变量占用的内存
+
+实现机制有两种:
+
+1、标记清除
+
+总体思路是变量在当前执行环境找不到标记它为'离开环境状态'
+变量在当前执行环境找得到标记为'进入环境状态'
+然后所有离开环境状态的变量都会被释放掉
+
+
+2、引用计数法
+
+...
+
+
+一般内存优化方案为不用的变量或者函数将其释放掉(赋值null)
+
+
+第五章 引用类型
+
+object类型、Array类型、Date类型、RegExp类型、function类型、包装类型
+
+注意:
+
+1、Array类型的迭代方法
+
+every():数组每一项运行给定函数，如果函数每一项都返回true，则返回true;	(与门)
+filter():数组每一项运行给定函数，函数返回由布尔值组成的数组;
+foreach():数组每一项运行给定函数，无返回值;
+map():数组每一项运行给定函数，返回每次函数调用的结果组成的数组;
+some():数组每一项运行给定函数,如果函数对任一项返回true,则返回true;  (或门)
+
+
+var number=[1,2,3,4,5,4,3,1]
+
+var result=number.every(function(item,index,array){
+	return (item>2);
+})
+
+alert(result)     //'false'
+
+
+var result1=number.some(function(item,index,array){
+	return (item>2);
+})
+
+alert(result1)    //'true'   
+
+
+var result2=number.map(function(item,index,array){
+	return item*2;
+});
+
+alert(result2)    //'[2,4,6,8,10,8,6,2]'
+
+
+2、function类型的解释
+
+(1) js中所有函数都是对象，因为函数都是function类型的实例，具有funcrtion类型的属性和方法
+函数名其实是一个指向函数对象的指针
+
+(2) 没有重载
+
+function add(num){
+	return num+100;
+}
+function add(num){
+	return num+200;
+}  
+var result=add(100)     //'300'
+
+这里因为函数名是一个指向函数对象的指针，所以第一个add函数执行完后,add指针改变了指向，指向另一个函数
+
+(3)  函数声明与函数表达式区别 
+
+代码执行之前，所有函数声明在解析时候会有个函数声明提升过程
+而函数表达式则没有
+
+alert(sum(10,20))
+function(num1,num2){
+	return num1+num2;
+}
+上面函数是没问题的，有函数声明提升
+
+alert(sum(10,20))
+var sum=function(sum1,sum2){
+	return sum1+sum2;
+};
+
+上面函数则会报错，因为函数位于一个初始化语句中，不是函数声明
+
+(函数内部属性arguments和this)
+
+arguments对象还具有一个属性callee:作用是指针，指向具有arguments这个对象的函数
+
+function add(i){
+	if(i<=0){
+	return 1;	
+}else{
+	return i*arguments.callee(i-1)
+}
+}
+
+
+函数中的call()和apply()
+
+核心是借代，借用其他执行环境来替换当前函数执行环境，扩充作用域。
+
+
+
+
+第6章 面向对象
+
+
+object.defineProperty
+
+
+window.color='red';
+var o={color:'blue'};
+function set(){
+	alert(this.color)
+}
+set();                     //'red'
+set.call(this)		   //'red'
+set.call(window)	   //'red'
+set.call(o)		   //'blue'
+
+
+Global对象中的eval()
+
+eval()创建的变量或者函数不会有提升。因为解析代码时候它们最开始是当成一个字符串处理，eval()执行时候才会被编译为JS代码
+
+
+
+P140
