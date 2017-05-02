@@ -250,3 +250,73 @@ eval()创建的变量或者函数不会有提升。因为解析代码时候它们最开始是当成一个字符串处
 
 
 P140
+
+
+一、对象
+
+
+注:属性的特性--属性的的各种特征
+
+1、属性类型:两种（数据属性和访问器属性）
+
+
+（1）数据属性
+	configurable:能否delete删除，能否把属性修改为访问器属性
+	enumerable:能否for-in遍历属性
+	writable:能否修改属性值
+	value:属性数据值
+
+修改方法见es5 Object.defineProperty()方法
+
+var obj={
+	name:123
+};
+Object.defineProperty=(obj,'name',{
+	writable:false,
+	value:234
+})
+console.log(obj.name)		//234
+obj.name=333;
+console.log(obj.name)		//234
+
+
+
+（2）访问器属性
+	configurable:同上
+	enumerable:同上
+	get:读取属性时侯的钩子函数
+	set:写入属性时侯的钩子函数
+
+注:访问器属性只能通过Object.defineProperty()来定义
+
+var obj={
+	_year:123
+}
+
+Object.defineProperty(obj,'year',{      //这里year是自定义的访问器属性，跟前面_year没有关系
+	get:function(){
+		...
+	},
+	set:function(){
+		...
+	}
+})      
+
+同时定义多个属性:Object.defineProperties()
+
+
+2、读取属性特性
+
+Object.getOwnPropertyDescriptor()。
+var obj={
+	asd:123
+}
+var res=Object.getOwnPropertyDescriptor(obj,'asd')
+
+如果目标属性是数据属性，则返回value,writable这四个
+如果是访问器属性，则返回get,set这四个
+
+
+
+
+P146
