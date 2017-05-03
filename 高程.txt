@@ -318,5 +318,85 @@ var res=Object.getOwnPropertyDescriptor(obj,'asd')
 
 
 
+二、对象原型
 
-P146
+判断对象来自实例还是原型
+
+function hasProp(obj,name){
+	return !object.hasOwnProperty(name)&&(name in object)
+}
+
+
+
+对象原型模式注意点
+
+function person(){
+	...
+}
+person.prototype={
+	name:'asd',
+	age:2
+	...
+}
+
+（1）、这种设置方式相当于用字面量形式创建一个对象，则constructor属性不会再指向原对象，而回指向object
+
+function person(){
+	...
+}
+console.log(person.prototype.constructor)	//person(){}	
+person.prototype={
+	name:'asd',
+	age:2
+	...
+}
+console.log(person.prototype.constructor)	//object
+
+（2）、同样字面量设置可以设置constructor属性
+
+...
+person.prototype={
+	constructor:person
+}
+
+这样设置会有问题，constructor的数据属性enumerable会改为true，变成可枚举的属性？？？？
+
+（3）、原型动态性
+
+function person(){
+	...
+}
+var friend=new person();
+person.prototype.ok=function(){
+	console.log('hi')
+};
+friend.ok()		//'hi'
+
+实例和原型之间的松散连接关系。调用friend.ok时侯，先在实例搜索名为'ok'的属性，没找到就搜索原
+型。
+
+如果修改了原型对象
+
+...
+person.prototype={
+	constructor:person
+	ok:function(){
+		console.log('hi')
+	}
+}
+
+friend.ok()		// error
+	
+重写person的原型对象后，切断了现有原型和任何之前已经存在的对象实例之间的联系，之前的还是用的最初的原型
+
+同样原生的引用类型也是用这种方式创建的，像Array,都是在其构造函数的原型上定义了方法
+
+console.log(typeof Array.prototype.sort())	//object
+
+三、继承
+
+oo语言继承有两种方式:接口继承和实现继承
+接口继承只继承方法签名，实现继承则继承实际的方法。
+JS只支持实现继承，通过原型链实现继承
+
+
