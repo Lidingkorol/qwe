@@ -133,7 +133,7 @@ Javascript自动垃圾收集机制来处理内存回收问题
 一般内存优化方案为不用的变量或者函数将其释放掉(赋值null)
 
 
-第五章 引用类型
+第5章 引用类型
 
 object类型、Array类型、Date类型、RegExp类型、function类型、包装类型
 
@@ -398,5 +398,105 @@ console.log(typeof Array.prototype.sort())	//object
 oo语言继承有两种方式:接口继承和实现继承
 接口继承只继承方法签名，实现继承则继承实际的方法。
 JS只支持实现继承，通过原型链实现继承
+
+1、原型链
+
+思想是:利用原型让一个引用类型继承另一个引用类型的属性和方法
+
+（1）组合继承:
+function a(){
+	this.name=name;
+}
+
+function b(name){
+	a.call(this,name)
+}
+
+b.prototype=new a();
+var c=new b('asd');
+var d=new b('zxc');
+console.log(c.name)		//'asd'
+console.log(d.name)		//'zxc'
+
+组合式继承，可以分别有自己属性和方法
+
+
+（2）原型继承:
+function obj(o){
+	function f(){}
+	f.prototype=o;
+	return new f();
+}
+
+ES5新增Object.create()方法规范化原型式继承
+
+var person={
+	name:asd
+}
+
+var obj=Object.create(person);
+console.log(obj.name)		//asd
+
+同样可以自定义属性
+
+...
+var obj=Object.create(person,{
+	name:{
+		value:'zxc'
+	}
+})
+
+console.log(obj.name)		//zxc
+
+
+
+（3）寄生式继承
+。。。
+
+
+
+
+第7章 函数
+
+创建函数两种:函数声明和函数表达式
+
+（1）、函数声明
+
+asd()		//'asd'
+function asd(){
+	console.log('asd')
+}
+
+函数声明方式会有函数声明提升，代码执行前先读取函数声明。
+
+（2）、函数表达式
+
+asd()		// 错误
+var asd=function(){
+	console.log('asd')
+}
+
+这种方式function后面没有跟标识符，所以也是匿名函数。并且跟其他表达式一样要先赋值
+
+
+一、递归
+
+arguments.callee是一个指向正在执行的函数的指针
+
+function f(num){
+	if(num<=1){
+		return 1;
+	}else{
+		return num*arguments.callee(num-1);
+	}
+}
+
+用这个替代函数名，可以避免函数内存释放的问题。但在严格模式下还是会有问题
+
+二、闭包
+
+闭包指有权访问另一个函数作用域的变量的函数。创建闭包:函数内部创建另一个函数
+
+
 
 
