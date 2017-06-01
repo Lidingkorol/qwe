@@ -498,5 +498,122 @@ function f(num){
 闭包指有权访问另一个函数作用域的变量的函数。创建闭包:函数内部创建另一个函数
 
 
+作用域链正常情况:函数内部函数创建时生成作用域链，包含全局变量对象。然后函数调用时候，又会将
+当前函数活动对象创建推入执行环境作用域链的前端。
+
+闭包情况:函数内部函数创建时生成作用域链，包含全局变量对象及内部函数的外部活动对象。
 
 
+
+（1）闭包对于变量的影响
+ function cf(){
+	var res =new Array();
+	for(var i=0;i<10;i++){
+		reseult[i] = function(){
+			return i;
+		}
+	}
+	return result;
+}
+
+
+这里正是由于内部函数创建时，其外部活动变量i和全局变量被推入作用域链。每生成一个匿名函数；都
+
+包含外部变量对象i，且引用的都是同一个变量对象i;所以当cf()函数被返回时候，此时外部活动对象i
+
+的值保存的是10,所以所有的匿名函数返回的值都是10;
+
+
+解决方法则是利用匿名函数
+
+
+ function cf(){
+	var res =new Array();
+	for(var i=0;i<10;i++){
+		reseult[i] = function(num){
+			return function(){
+				return num
+			}
+		}(i);
+	}
+	return result;
+}
+
+这里每次传入函数内部的值通过num接收，返回num值，由于函数参数是按值传递,所以每次变量的当前值
+都有效被接收到，通过num返回。
+
+
+补充:之前函数内部嵌套匿名函数,this指向window的解释。。。
+
+函数调用时候，活动对象会包含两个特殊变量:this 和arguments。内部函数搜索变量时候，只会搜索到
+自己的活动对象为止，不会访问外部函数的这两个变量。
+
+
+第8章：BOM
+
+一、window对象
+
+全局对象，所有js写入的对象函数都会变成window对象的属性和方法
+
+
+(1)窗口有关属性
+
+1、screenLeft screenTop   2、screenX  screenY   3、innerWidth innerHeight   
+
+4、outerWidth outerHeight
+
+以上这几对有不同浏览器的兼容问题
+
+
+二、location对象
+
+
+hash    	返回url中的hash
+host		服务器名称和端口号
+hostname	不带端口号的服务器名称
+href		当前加载页面的完整url
+pathname	返回url中的目录和文件名
+port		url指定端口号
+protocol	页面使用的协议
+search		返回url的查询字符串
+
+上述属性方法单纯赋值效果与调用 assign()方法效果一样，直接改变当前加载的页面。这种方法修改也
+会在历史记录生成一条记录，后退按钮会导航到前一个页面。可以用replace()方法，这样不会再历史记
+录里生成新纪录，后退按钮也不会回到这个页面
+
+
+
+三、navigator对象
+
+用于识别客户端浏览器，检测浏览器类型
+
+
+四、hiostory对象
+
+用于修改当前url，历史记录url
+
+
+
+
+
+第10章:DOM
+
+
+一、节点
+
+参照文档对象模型图例
+
+
+
+
+二、Node类型
+
+所有节点都具有一个nodeType属性
+
+
+Node.ELEMENT_NODE(1)
+Node.ATTRIBUTE_NODE(2)
+
+
+
+ P248
