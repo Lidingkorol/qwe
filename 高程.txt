@@ -611,9 +611,108 @@ search		返回url的查询字符串
 所有节点都具有一个nodeType属性
 
 
-Node.ELEMENT_NODE(1)
-Node.ATTRIBUTE_NODE(2)
+属性节点element.getAttributeNode('...')
+
+暂时提供常用几种:
+
+Node.ELEMENT_NODE(1)   		//元素节点，标签
+Node.ATTRIBUTE_NODE(2)		//属性节点，style,id
+Node.TEXT_NODE(3)		//文本节点
+Node.DOCUMENT_NODE(9)		//dom节点
+ 
+以下省略
+。。。自行翻书
 
 
 
- P248
+
+
+第13章:事件
+
+一、事件流
+
+IE:事件冒泡流    Netscape:事件捕获流
+
+（1）事件冒泡
+
+由点击元素优先响应，通过DOM树向上传播，直到document对象
+
+（2）事件捕获
+
+与冒泡完全相反，document对象优先响应，向下传递到具体点击元素
+
+
+二、DOM事件处理程序
+
+DOM2级事件规定事件流包括三个阶段:事件捕获、处于目标阶段和事件冒泡阶段
+
+
+
+DOM0级事件处理程序
+
+是js事件处理程序的传统方式,将一个函数赋值给一个事件处理程序属性
+
+document.getElementById('asd').onlcick=function(){
+	...
+}
+
+此时指定的事件处理程序可以被认为是元素的方法，在元素的作用域中运行。
+
+
+DOM2级事件处理程序
+
+addEventListener()和removeEventListener()
+
+接收三个参数，要处理的事件名、事件处理程序的函数、布尔值
+
+布尔值为true表示捕获阶段调用事件处理程序，反之则是冒泡阶段调用事件处理程
+序。
+
+document.getElementById('ASD').addEventListener('click',function(){
+	...
+},fasle)
+
+
+用上述方法注册的事件只能用对应方法来移除相应事件。若需要将事件侦听的事件处
+
+理程序注销，则需要采用具有函数名的函数，不能使用匿名函数。、。
+
+
+IE事件处理程序
+
+attachEvent()和detachEvent()
+
+这两个函数与DOM0级方法区别在于事件处理程序作用域。DOM0级方法，事件处理程序
+在所属元素作用域内运行，attachEvent()这两个的事件处理程序在全局作用域中运行
+。
+
+此方法用于ie浏览器 ，谷歌经测试不能使用
+
+
+三、事件对象
+
+事件处理程序中会传入一个特殊对象event
+
+
+如type 		事件类型
+target		事件目标
+canvelable	是否可以取消事件默认行为
+currentTarget	当前正在处理事件的那个元素
+等。。。
+
+
+四、事件类型
+
+略
+
+
+五、内存和性能
+
+事件委托:给父级或更高级元素绑定事件，添加事件处理程序，通过event对象来区分
+
+不同子元素，做出不同事件处理，节约内存
+
+
+
+
+
